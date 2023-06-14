@@ -40,14 +40,14 @@ public class CustomerController : ControllerBase
 
     [HttpGet]
     [Route("/InsertCustomer")]
-    public Response InsertCustomer(string customerName, string customerEmail)
+    public Response InsertCustomer(string userName, string password)
     {
         Response response = new Response();
         try
         {
             List<Customer> customers = new List<Customer>();
 
-            Customer customer = new Customer(customerName, customerEmail);
+            Customer customer = new Customer(userName, password);
 
             int rowsAffected = 0;
 

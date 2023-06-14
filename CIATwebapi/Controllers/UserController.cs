@@ -73,4 +73,47 @@ public class UserController : ControllerBase
 
         return response;
     }
+
+    [HttpGet]
+    [Route("/SearchUsers")]
+    public Response SearchUsers(string search = "", string search2 = "")
+    {
+        Response response = new Response();
+        try
+        {
+            List<User> users = new List<User>();
+
+            string connectionString = GetConnectionString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                users = CIATwebapi.User.SearchUsers(sqlConnection, search, search2);
+            }
+
+            string message = "";
+
+            if (users.Count() == 1)
+            {
+                int userCount = users[0].UserCount;
+                message = $"Found {userCount} Users!";
+                response.Result = "success";
+
+            }
+            else
+            {
+                response.Result = "success...but";
+                message = "Incorrect Username or Password.";
+            }
+
+
+            response.Message = message;
+            response.Users = users;
+        }
+        catch (Exception e)
+        {
+            response.Result = "failure";
+            response.Message = e.Message;
+        }
+        return response;
+    }
 }
