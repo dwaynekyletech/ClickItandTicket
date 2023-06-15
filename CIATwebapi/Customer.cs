@@ -8,6 +8,7 @@ namespace CIATwebapi
         public int customer_id { get; set; }
         public string? userName { get; set; }
         public string? password { get; set; }
+        public int CustomerCount { get; set; }
 
         public Customer()
         {
@@ -65,7 +66,39 @@ namespace CIATwebapi
 
             int rowsAffected = sqlCommand.ExecuteNonQuery();
             return rowsAffected;
+
+
         }
 
+        public static List<Customer> SearchCustomers(SqlConnection sqlConnection, string search = "", string search2 = "")
+        {
+            List<Customer> customers = new List<Customer>();
+
+            string sql = "select x.CustomerId, u.Username, u.Password, x.[Count] from (select CustomerId, COUNT (*) over() as [Count] from [Customer] where Username = @Search and Password = @Search2)x join [Customer] u on x.CustomerId = u.CustomerId order by 1;";
+            SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+            SqlParameter paramSearch = new SqlParameter("@Search", search);
+            SqlParameter paramSearch2 = new SqlParameter("@Search2", search2);
+            paramSearch.DbType = System.Data.DbType.String;
+            paramSearch2.DbType = System.Data.DbType.String;
+            sqlCommand.Parameters.Add(paramSearch);
+            sqlCommand.Parameters.Add(paramSearch2);
+
+
+            SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+
+            while (sqlDataReader.Read())
+            {
+                Customer customer = new Customer();
+                customer.customer_id = Convert.ToInt32(sqlDataReader["CustomerId"].ToString());
+                customer.userName = (sqlDataReader["Username"].ToString());
+                customer.password = (sqlDataReader["Password"].ToString());
+                customer.CustomerCount = Convert.ToInt32(sqlDataReader["Count"].ToString());
+
+                customers.Add(customer);
+            }
+
+            return customers;
+        }
     }
 }

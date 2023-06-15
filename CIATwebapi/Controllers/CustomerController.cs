@@ -71,4 +71,47 @@ public class CustomerController : ControllerBase
 
         return response;
     }
+
+    [HttpGet]
+    [Route("/SearchCustomers")]
+    public Response SearchCustomers(string search = "", string search2 = "")
+    {
+        Response response = new Response();
+        try
+        {
+            List<Customer> customers = new List<Customer>();
+
+            string connectionString = GetConnectionString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                customers = CIATwebapi.Customer.SearchCustomers(sqlConnection, search, search2);
+            }
+
+            string message = "";
+
+            if (customers.Count() == 1)
+            {
+                int customercount = customers[0].CustomerCount;
+                message = $"Found {customercount} Users!";
+                response.Result = "success";
+
+            }
+            else
+            {
+                response.Result = "success...but";
+                message = "Incorrect Username or Password.";
+            }
+
+
+            response.Message = message;
+            response.Customers = customers;
+        }
+        catch (Exception e)
+        {
+            response.Result = "failure";
+            response.Message = e.Message;
+        }
+        return response;
+    }
 }
