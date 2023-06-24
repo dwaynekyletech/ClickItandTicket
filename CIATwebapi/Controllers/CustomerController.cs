@@ -72,20 +72,22 @@ public class CustomerController : ControllerBase
         return response;
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("/SearchCustomers")]
-    public Response SearchCustomers(string search = "", string search2 = "")
+    public Response SearchCustomers([FromBody] Customer customer)
     {
         Response response = new Response();
         try
         {
             List<Customer> customers = new List<Customer>();
 
+            string? searchCustomerUsername = customer.userName;
+            string? searchCustomerPassword = customer.password;
             string connectionString = GetConnectionString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                customers = CIATwebapi.Customer.SearchCustomers(sqlConnection, search, search2);
+                customers = CIATwebapi.Customer.SearchCustomers(sqlConnection, searchCustomerUsername, searchCustomerPassword);
             }
 
             string message = "";

@@ -74,20 +74,22 @@ public class UserController : ControllerBase
         return response;
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("/SearchUsers")]
-    public Response SearchUsers(string search = "", string search2 = "")
+    public Response SearchUsers([FromBody] User user)
     {
         Response response = new Response();
         try
         {
             List<User> users = new List<User>();
+            string? search1 = user.userName;
+            string? search2 = user.password;
 
             string connectionString = GetConnectionString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                users = CIATwebapi.User.SearchUsers(sqlConnection, search, search2);
+                users = CIATwebapi.User.SearchUsers(sqlConnection, search1, search2);
             }
 
             string message = "";
@@ -116,4 +118,6 @@ public class UserController : ControllerBase
         }
         return response;
     }
+
+
 }

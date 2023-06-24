@@ -70,15 +70,15 @@ namespace CIATwebapi
 
         }
 
-        public static List<Customer> SearchCustomers(SqlConnection sqlConnection, string search = "", string search2 = "")
+        public static List<Customer> SearchCustomers(SqlConnection sqlConnection, string? searchCustomerUsername, string? searchCustomerPassword)
         {
             List<Customer> customers = new List<Customer>();
 
             string sql = "select x.CustomerId, u.Username, u.Password, x.[Count] from (select CustomerId, COUNT (*) over() as [Count] from [Customer] where Username = @Search and Password = @Search2)x join [Customer] u on x.CustomerId = u.CustomerId order by 1;";
             SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
             sqlCommand.CommandType = System.Data.CommandType.Text;
-            SqlParameter paramSearch = new SqlParameter("@Search", search);
-            SqlParameter paramSearch2 = new SqlParameter("@Search2", search2);
+            SqlParameter paramSearch = new SqlParameter("@Search", searchCustomerUsername);
+            SqlParameter paramSearch2 = new SqlParameter("@Search2", searchCustomerPassword);
             paramSearch.DbType = System.Data.DbType.String;
             paramSearch2.DbType = System.Data.DbType.String;
             sqlCommand.Parameters.Add(paramSearch);

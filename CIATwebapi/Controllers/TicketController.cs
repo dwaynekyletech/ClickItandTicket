@@ -26,30 +26,55 @@ public class TicketController : ControllerBase
     [HttpGet]
     [Route("/GetTickets")]
 
-    public IEnumerable<Ticket> Get()
-    {
-        List<Ticket> tickets = new List<Ticket>();
-        string connectionString = GetConnectionString();
-        using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-        {
-            sqlConnection.Open();
-            tickets = Ticket.GetTickets(sqlConnection);
-        }
-
-        return tickets;
-    }
-
-
-    [HttpGet]
-    [Route("/InsertTicket")]
-    public Response InsertTicket(string ticketDescription, TicketStatus ticketStatus, TicketPriority ticketPriority)
+    public Response GetTickets(string customer_id)
     {
         Response response = new Response();
         try
         {
             List<Ticket> tickets = new List<Ticket>();
 
-            Ticket ticket = new Ticket(ticketDescription, ticketStatus, ticketPriority);
+            string connectionString = GetConnectionString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                tickets = Ticket.GetTickets(Convert.ToInt32(customer_id), sqlConnection);
+            }
+
+            string message = "";
+
+            if (tickets.Count() > 0)
+            {
+                int ticketCount = tickets[0].ticketCount;
+                message = $"Found {ticketCount} Tickets!";
+            }
+            else
+            {
+                message = "No tickets met your search criteria.";
+            }
+
+            response.Result = "success";
+            response.Message = message;
+            response.Tickets = tickets;
+        }
+        catch (Exception e)
+        {
+            response.Result = "failure";
+            response.Message = e.Message;
+        }
+        return response;
+    }
+
+
+    [HttpGet]
+    [Route("/InsertTicket")]
+    public Response InsertTicket(string ticketSubject, string ticketDescription, TicketStatus ticketStatus, TicketPriority ticketPriority)
+    {
+        Response response = new Response();
+        try
+        {
+            List<Ticket> tickets = new List<Ticket>();
+
+            Ticket ticket = new Ticket(ticketSubject, ticketDescription, ticketStatus, ticketPriority);
 
             int rowsAffected = 0;
 
@@ -59,6 +84,38 @@ public class TicketController : ControllerBase
                 sqlConnection.Open();
                 rowsAffected = Ticket.InsertTicket(ticket, sqlConnection);
                 // ticket = Ticket.SearchTicket(sqlConnection);
+            }
+
+            response.Result = (rowsAffected == 1) ? "success" : "failure";
+            response.Message = $"{rowsAffected} rows affected.";
+            response.Tickets = tickets;
+        }
+        catch (Exception e)
+        {
+            response.Result = "failure";
+            response.Message = e.Message;
+        }
+
+        return response;
+    }
+
+    [HttpGet]
+    [Route("/DeleteTicket")]
+    public Response DeleteTicket(string ticket_id)
+    {
+        Response response = new Response();
+
+        try
+        {
+            List<Ticket> tickets = new List<Ticket>();
+            int rowsAffected = 0;
+
+            string connectionString = GetConnectionString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                rowsAffected = Ticket.DeleteTicket(Convert.ToInt32(ticket_id), sqlConnection);
+                // tickets = Ticket.SearchTickets(sqlConnection);
             }
 
             response.Result = (rowsAffected == 1) ? "success" : "failure";
