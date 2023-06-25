@@ -36,6 +36,12 @@ namespace CIATwebapi
             this.ticketStatus = TicketStatus.Open;
             this.ticketPriority = ticketPriority;
         }
+        public Ticket(int ticket_id, string? ticketSubject, string? ticketDescription)
+        {
+            this.ticket_id = ticket_id;
+            this.ticketSubject = ticketSubject;
+            this.ticketDescription = ticketDescription;
+        }
 
         public Ticket(int ticket_id, string ticketDescription, TicketStatus ticketStatus, TicketPriority ticketPriority)
         {
@@ -93,6 +99,33 @@ namespace CIATwebapi
             sqlCommand.Parameters.Add(paramDescription);
             sqlCommand.Parameters.Add(paramStatus);
             sqlCommand.Parameters.Add(paramPriority);
+
+            int rowsAffected = sqlCommand.ExecuteNonQuery();
+            return rowsAffected;
+        }
+
+        public static int UpdateTicket(Ticket ticket, int customer_id, SqlConnection sqlConnection)
+        {
+            string sql = "update Ticket set TicketSubject = @TicketSubject, Description = @Description where TicketId = @TicketId and CustomerId = @customer_id;";
+
+
+            SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+
+            SqlParameter paramTicketSubject = new SqlParameter("@TicketSubject", ticket.ticketSubject == null ? (object)DBNull.Value : ticket.ticketSubject);
+            SqlParameter paramDescription = new SqlParameter("@Description", ticket.ticketDescription == null ? (object)DBNull.Value : ticket.ticketDescription);
+            SqlParameter paramTicketId = new SqlParameter("@TicketId", ticket.ticket_id);
+            SqlParameter paramCustomerId = new SqlParameter("@customer_id", customer_id);
+
+            paramTicketSubject.DbType = System.Data.DbType.String;
+            paramDescription.DbType = System.Data.DbType.String;
+            paramTicketId.DbType = System.Data.DbType.Int32;
+            paramCustomerId.DbType = System.Data.DbType.Int32;
+
+            sqlCommand.Parameters.Add(paramTicketSubject);
+            sqlCommand.Parameters.Add(paramDescription);
+            sqlCommand.Parameters.Add(paramTicketId);
+            sqlCommand.Parameters.Add(paramCustomerId);
 
             int rowsAffected = sqlCommand.ExecuteNonQuery();
             return rowsAffected;

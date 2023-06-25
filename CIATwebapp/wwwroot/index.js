@@ -5,47 +5,68 @@ function CIATwebapp() {
     var textSearch = document.getElementById("floatingInput");
     var textSearch2 = document.getElementById("floatingPassword");
     var buttonSearch = document.getElementById("button-search2");
-    var buttonCreateATicket = document.getElementById("create")
-    var buttonHome = document.getElementById("go-home")
-    var buttonSignUp = document.getElementById("signup")
+
     var buttonInsert = document.getElementById("button-insert");
     var buttonDelete = document.getElementById("button-delete");
 
+    var navSignin = document.getElementById("nav-signin");
+    var navSignup = document.getElementById("nav-signup");
+    var navCustomerTicket = document.getElementById("nav-customer");
+
+    var pageSignin = document.getElementById("signin");
+    var pageCustomerTicket = document.getElementById("ticket-system")
+    var pageSignUp = document.getElementById("signuplink")
+
+    var buttonUpdate = document.getElementById("button-update");
+
+
+
+    // var showFormInsert = document.getElementById("form-insert");
+    // var showFormUpdate = document.getElementById("form-update");
+    // var showFormDelete = document.getElementById("form-delete");
+    // var showFormSearch = document.getElementById("form-search");
+
     buttonSearch.addEventListener("click", searchUsers)
-    buttonCreateATicket.addEventListener("click", clickCreateATicket)
-    buttonHome.addEventListener("click", clickHome)
-    buttonSignUp.addEventListener("click", clickSignUp)
     buttonInsert.addEventListener("click", insertTicket);
     buttonDelete.addEventListener("click", handleButtonDeleteClick);
+    buttonUpdate.addEventListener("click", updateTicket);
 
+    navSignin.addEventListener("click", handleClickNavSignin);
+    navCustomerTicket.addEventListener("click", handleClickNavCustomerTicket);
+    navSignup.addEventListener("click", handleClickNavSignup);
 
-
-    function clickHome() {
-        var pageSignin = document.getElementById("signin")
-        pageSignin.classList.remove("visually-hidden")
-        var pageCreateATicket = document.getElementById("create-ticket")
-        pageCreateATicket.classList.add("visually-hidden")
-        var pageSignUp = document.getElementById("signuplink")
-        pageSignUp.classList.add("visually-hidden")
+    function handleClickNavSignin() {
+        // window.history.pushState({}, "", "/" + "employees");
+        showPage("sign-in");
+        // e.preventDefault();
     }
 
-    function clickSignUp() {
-        var pageSignUp = document.getElementById("signuplink")
-        pageSignUp.classList.remove("visually-hidden")
-        var pageSignin = document.getElementById("signin")
-        pageSignin.classList.add("visually-hidden")
-        var pageCreateATicket = document.getElementById("create-ticket")
-        pageCreateATicket.classList.add("visually-hidden")
+    function handleClickNavCustomerTicket() {
+        // window.history.pushState({}, "", "/" + "departments");
+        showPage("customer-ticket");
+        // e.preventDefault();
     }
 
-    function clickCreateATicket() {
-        var pageSignin = document.getElementById("signin")
-        pageSignin.classList.add("visually-hidden")
-        var pageSignUp = document.getElementById("signuplink")
-        pageSignUp.classList.add("visually-hidden")
-        var pageCreateATicket = document.getElementById("create-ticket")
-        pageCreateATicket.classList.remove("visually-hidden")
+    function handleClickNavSignup() {
+        // window.history.pushState({}, "", "/" + "products");
+        showPage("sign-up");
+        // e.preventDefault();
+    }
 
+    function showPage(page) {
+        if (page.toLowerCase() === "sign-in" || page === "") {
+            pageSignin.classList.remove("visually-hidden");
+            pageCustomerTicket.classList.add("visually-hidden");
+            pageSignUp.classList.add("visually-hidden");
+        } else if (page.toLowerCase() === "customer-ticket") {
+            pageSignin.classList.add("visually-hidden");
+            pageCustomerTicket.classList.remove("visually-hidden");
+            pageSignUp.classList.add("visually-hidden");
+        } else if (page.toLowerCase() === "sign-up") {
+            pageSignin.classList.add("visually-hidden");
+            pageCustomerTicket.classList.add("visually-hidden");
+            pageSignUp.classList.remove("visually-hidden");
+        }
     }
 
 
@@ -116,8 +137,11 @@ function CIATwebapp() {
                     var response = JSON.parse(xhr.responseText);
 
                     if (response.customer_id > 0) {
+                        showPage("customer-ticket");
 
-                        alert(response.customer_id);
+                        // Store customerId in a variable to use in more functions
+                        getTickets(response.customer_id);
+
                     } else {
                         alert("API Error: " + response.message);
                     }
@@ -129,9 +153,9 @@ function CIATwebapp() {
 
     };
 
-    function getTickets() {
+    function getTickets(customer_id) {
 
-        var url = "http://localhost:5079/GetTickets?customer_id=1";
+        var url = "http://localhost:5079/GetTickets?customer_id=" + customer_id;
 
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = doAfterGetTickets;
@@ -147,6 +171,7 @@ function CIATwebapp() {
 
                     var response = JSON.parse(xhr.responseText);
 
+
                     if (response.result === "success") {
                         showTickets(response.tickets);
                         // alert("Hello World")
@@ -158,8 +183,9 @@ function CIATwebapp() {
                 }
             }
         };
-
     };
+
+
     function insertTicket() {
 
         var textSubject = document.getElementById("text-insert-Subject");
@@ -201,6 +227,50 @@ function CIATwebapp() {
         textSubject.value = "";
         textDescription.value = "";
     }
+
+    function updateTicket(customer_id) {
+
+        var textTicketId = document.getElementById("text-update-ticket-id");
+        var textTicketSubject = document.getElementById("text-update-ticket-subject");
+        var textTicketDescription = document.getElementById("text-update-ticket-description");
+
+        var url = "http://localhost:5079/updateticket?ticket_id=" + textTicketId.value + "&ticketsubject=" + textTicketSubject.value + "&ticketdescription=" + textTicketDescription.value + '&customer_id=' + customer_id;
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = doAfterUpdateTicket;
+        xhr.open("GET", url);
+        xhr.send(null);
+
+        function doAfterUpdateTicket() {
+            var DONE = 4; // readyState 4 means the request is done.
+            var OK = 200; // status 200 is a successful return.
+            if (xhr.readyState === DONE) {
+                if (xhr.status === OK) {
+
+                    var response = JSON.parse(xhr.responseText);
+
+                    if (response.result === "success") {
+                        console.log(response);
+                    } else {
+                        console.log(customer_id)
+                        alert("API Error: " + response.message);
+                        console.log(response);
+                    }
+                } else {
+                    alert("Server Error: " + xhr.status + " " + xhr.statusText);
+                }
+            }
+        }
+
+        // var updateForm = document.getElementById("form-update");
+        // updateForm.classList.add("visually-hidden");
+
+        // textEmployeeId.value = "";
+        // textFirstName.value = "";
+        // textLastName.value = "";
+        // textSalary.value = "";
+    }
+
     function handleTicketTableDeleteClick(e) {
         var ticket_id = e.target.getAttribute("data-ticket-id");
         //alert("you want to delete employee " + employeeId)
@@ -273,6 +343,6 @@ function CIATwebapp() {
         }
     }
 
-    getTickets();
+
 }
 CIATwebapp();
