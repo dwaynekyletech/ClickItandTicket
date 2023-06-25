@@ -70,7 +70,7 @@ namespace CIATwebapi
 
         }
 
-        public static List<Customer> SearchCustomers(SqlConnection sqlConnection, string? searchCustomerUsername, string? searchCustomerPassword)
+        public static List<Customer> SearchCustomers(SqlConnection sqlConnection, string? searchCustomerUsername, string? searchCustomerPassword, int customerid)
         {
             List<Customer> customers = new List<Customer>();
 

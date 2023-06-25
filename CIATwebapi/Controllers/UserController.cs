@@ -84,13 +84,15 @@ public class UserController : ControllerBase
             List<User> users = new List<User>();
             string? search1 = user.userName;
             string? search2 = user.password;
+            int userid = user.user_id;
 
             string connectionString = GetConnectionString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                users = CIATwebapi.User.SearchUsers(sqlConnection, search1, search2);
+                users = CIATwebapi.User.SearchUsers(sqlConnection, search1, search2, userid);
             }
+
 
             string message = "";
 
@@ -100,13 +102,14 @@ public class UserController : ControllerBase
                 message = $"Found {userCount} Users!";
                 response.Result = "success";
 
+                userid = users[0].user_id;
+                return new Response { User_id = userid };
             }
             else
             {
                 response.Result = "success...but";
                 message = "Incorrect Username or Password.";
             }
-
 
             response.Message = message;
             response.Users = users;
@@ -118,6 +121,7 @@ public class UserController : ControllerBase
         }
         return response;
     }
+
 
 
 }

@@ -68,7 +68,7 @@ namespace CIATwebapi
             return rowsAffected;
         }
 
-        public static List<User> SearchUsers(SqlConnection sqlConnection, string? search1, string? search2)
+        public static List<User> SearchUsers(SqlConnection sqlConnection, string? search1, string? search2, int userid)
         {
             List<User> users = new List<User>();
 

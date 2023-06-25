@@ -83,11 +83,13 @@ public class CustomerController : ControllerBase
 
             string? searchCustomerUsername = customer.userName;
             string? searchCustomerPassword = customer.password;
+            int customerid = customer.customer_id;
+
             string connectionString = GetConnectionString();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                customers = CIATwebapi.Customer.SearchCustomers(sqlConnection, searchCustomerUsername, searchCustomerPassword);
+                customers = CIATwebapi.Customer.SearchCustomers(sqlConnection, searchCustomerUsername, searchCustomerPassword, customerid);
             }
 
             string message = "";
@@ -97,6 +99,9 @@ public class CustomerController : ControllerBase
                 int customercount = customers[0].CustomerCount;
                 message = $"Found {customercount} Users!";
                 response.Result = "success";
+
+                customerid = customers[0].customer_id;
+                return new Response { Customer_id = customerid };
 
             }
             else

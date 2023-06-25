@@ -32,7 +32,7 @@
 <body>
 
     <main class="form-signin w-100 m-auto">
-        <div id="signin" class="visually-hidden">
+        <div id="signin" class="">
             <form class="px-1 py-3">
 
                 <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
@@ -102,7 +102,7 @@
     <div class="container">
 
         <!-- Employees Page -->
-        <div id="page-tickets" class="row">
+        <div id="page-tickets" class="row visually-hidden">
 
             <div class="col-12 page-title">
                 <h3>Tickets</h3>
@@ -116,7 +116,7 @@
 
                 <!-- Insert/Update/Delete forms - begin -->
 
-                <div id="form-insert" class="">
+                <div id="form-insert" class="visually-hidden">
                     <h4>Create a Ticket</h4>
                     <form>
                         <div class="mb-2">
@@ -150,7 +150,7 @@
                     </form>
                 </div>
 
-                <div id="form-update" class="">
+                <div id="form-update" class="visually-hidden">
                     <h4>Update</h4>
                     <form>
                         <div class="mb-2">
@@ -199,7 +199,7 @@
                 </div>
 
                 <form class="mt-5">
-                    <div class="row mb-2 g-2">
+                    <div class="row mb-2 g-2 visually-hidden">
                         <div class="col-6">
                             <input id="text-search" type="text" class="form-control">
                         </div>
@@ -210,7 +210,7 @@
                             <button id="button-search-clear" type="button" class="btn btn-primary">Clear</button>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-2 visually-hidden">
                         <div class="col-xs-6">
                             <label>Rows per page</label>
                         </div>
@@ -224,7 +224,7 @@
                     </div>
 
 
-                    <div class="row mb-2 g-2">
+                    <div class="row mb-2 g-2 visually-hidden">
                         <div class="col-auto">
                             <button id="button-page-prev" type="button" class="btn btn-primary">&lt;</button>
                         </div>
@@ -241,16 +241,7 @@
                     </div>
 
 
-                    <div class="row mb-2">
-                        <div class="col-auto">
-                            <button id="button-show-insert-form" type="button"
-                                class="btn btn-outline-primary">Insert</button>
-                        </div>
-                    </div>
 
-                    <div class="row mb-2">
-                        <div id="select-department"></div>
-                    </div>
 
                 </form>
 

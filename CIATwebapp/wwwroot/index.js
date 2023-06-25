@@ -4,7 +4,7 @@ function CIATwebapp() {
 
     var textSearch = document.getElementById("floatingInput");
     var textSearch2 = document.getElementById("floatingPassword");
-    var buttonSearch = document.getElementById("button-search");
+    var buttonSearch = document.getElementById("button-search2");
     var buttonCreateATicket = document.getElementById("create")
     var buttonHome = document.getElementById("go-home")
     var buttonSignUp = document.getElementById("signup")
@@ -49,7 +49,7 @@ function CIATwebapp() {
     }
 
 
-    function searchUsers() {
+    function searchUsers(userId) {
 
 
         var url = 'http://localhost:5079/SearchUsers';
@@ -60,7 +60,8 @@ function CIATwebapp() {
         xhr.setRequestHeader('Content-Type', 'application/json');
         var body = {
             "userName": textSearch.value,
-            "password": textSearch2.value
+            "password": textSearch2.value,
+            "userid": userId
         };
         xhr.send(JSON.stringify(body));
         // xhr.send(null);
@@ -70,15 +71,18 @@ function CIATwebapp() {
             var OK = 200; // status 200 is a successful return.
             if (xhr.readyState === DONE) {
                 if (xhr.status === OK) {
-
                     var response = JSON.parse(xhr.responseText);
 
-                    if (response.result === "success") {
-                        alert("Hello World");
+                    if (response.user_id > 0) {
+
+                        alert(response.user_id);
+
+
                     } else {
                         // alert("API Error: " + response.message);
-                        buttonSearch.addEventListener("click", searchCustomers)
+                        buttonSearch.addEventListener("click", searchCustomers());
                     }
+                    var response = JSON.parse(xhr.responseText);
                 } else {
                     alert("Server Error: " + xhr.status + " " + xhr.statusText);
                 }
@@ -87,7 +91,7 @@ function CIATwebapp() {
 
     };
 
-    function searchCustomers() {
+    function searchCustomers(customerid) {
 
         var url = 'http://localhost:5079/SearchCustomers';
 
@@ -97,7 +101,8 @@ function CIATwebapp() {
         xhr.setRequestHeader('Content-Type', 'application/json');
         var body = {
             "userName": textSearch.value,
-            "password": textSearch2.value
+            "password": textSearch2.value,
+            "customerid": customerid
         };
         xhr.send(JSON.stringify(body));
         // xhr.send(null);
@@ -110,8 +115,9 @@ function CIATwebapp() {
 
                     var response = JSON.parse(xhr.responseText);
 
-                    if (response.result === "success") {
-                        alert("Goodbye World");
+                    if (response.customer_id > 0) {
+
+                        alert(response.customer_id);
                     } else {
                         alert("API Error: " + response.message);
                     }
