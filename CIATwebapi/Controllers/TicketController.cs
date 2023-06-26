@@ -64,17 +64,57 @@ public class TicketController : ControllerBase
         return response;
     }
 
-
     [HttpGet]
-    [Route("/InsertTicket")]
-    public Response InsertTicket(string ticketSubject, string ticketDescription, TicketStatus ticketStatus, TicketPriority ticketPriority)
+    [Route("/GetAllTickets")]
+
+    public Response GetAllTickets()
     {
         Response response = new Response();
         try
         {
             List<Ticket> tickets = new List<Ticket>();
 
-            Ticket ticket = new Ticket(ticketSubject, ticketDescription, ticketStatus, ticketPriority);
+            string connectionString = GetConnectionString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                tickets = Ticket.GetAllTickets(sqlConnection);
+            }
+
+            string message = "";
+
+            if (tickets.Count() > 0)
+            {
+                int ticketCount = tickets[0].ticketCount;
+                message = $"Found {ticketCount} Tickets!";
+            }
+            else
+            {
+                message = "No tickets met your search criteria.";
+            }
+
+            response.Result = "success";
+            response.Message = message;
+            response.Tickets = tickets;
+        }
+        catch (Exception e)
+        {
+            response.Result = "failure";
+            response.Message = e.Message;
+        }
+        return response;
+    }
+
+    [HttpGet]
+    [Route("/InsertTicket")]
+    public Response InsertTicket(string ticketSubject, string ticketDescription, TicketStatus ticketStatus, TicketPriority ticketPriority, int customerid)
+    {
+        Response response = new Response();
+        try
+        {
+            List<Ticket> tickets = new List<Ticket>();
+
+            Ticket ticket = new Ticket(ticketSubject, ticketDescription, ticketStatus, ticketPriority, customerid);
 
             int rowsAffected = 0;
 
@@ -101,7 +141,7 @@ public class TicketController : ControllerBase
 
     [HttpGet]
     [Route("/UpdateTicket")]
-    public Response UpdateTicket(string ticket_id, string customer_id, string? ticketSubject, string? ticketDescription)
+    public Response UpdateTicket(string ticket_id, string? ticketSubject, string? ticketDescription)
     {
         Response response = new Response();
 
@@ -118,15 +158,14 @@ public class TicketController : ControllerBase
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                rowsAffected = Ticket.UpdateTicket(ticket, Convert.ToInt32(customer_id), sqlConnection);
+                rowsAffected = Ticket.UpdateTicket(ticket, sqlConnection);
                 // tickets = Ticket.SearchTickets(sqlConnection);
             }
 
             response.Result = (rowsAffected == 1) ? "success" : "failure";
             response.Message = $"{rowsAffected} rows affected.";
             response.Tickets = tickets;
-            int customerid = Convert.ToInt32(customer_id);
-            return new Response { Customer_id = customerid };
+
         }
         catch (Exception e)
         {

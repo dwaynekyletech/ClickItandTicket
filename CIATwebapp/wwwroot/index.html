@@ -13,14 +13,16 @@
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a id="nav-signin" class="nav-link active" aria-current="page" href="#">Home</a>
                     <a id="nav-signup" class="nav-link" href="#">Sign Up</a>
-                    <a id="nav-customer" class="nav-link active" href="#">Create a Ticket</a>
-                    <a id="nav-manage" class="nav-link active">Manage your Tickets</a>
+                    <a id="nav-customer" class="nav-link visually-hidden">Manage Your Tickets</a>
+                    <a id="nav-user" class="nav-link visually-hidden">Manage Your Tickets</a>
+                    <a id="nav-signout" class="nav-link ml-auto visually-hidden" href="#">Sign Out</a>
                 </div>
             </div>
+
         </div>
     </nav>
 
@@ -226,11 +228,89 @@
                 <!-- Insert/Update/Delete forms - end -->
 
             </div>
-            <!-- <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
+
+
+
+
+
+
+            </form>
+
+            <!-- Insert/Update/Delete forms - end -->
+
+        </div>
+
+        <!-- <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script> -->
-            <script src="index.js"></script>
+        <script src="index.js"></script>
+    </div>
+    <div id="page-respond-tickets" class="row visually-hidden">
 
+        <div class="col-12 page-title">
+            <h3>Tickets</h3>
+        </div>
+
+        <div class="col col-8 col-ticket-table">
+            <div id="response-table"></div>
+        </div>
+
+        <div class="col col-4 my-right">
+
+            <!-- Insert/Update/Delete forms - begin -->
+
+
+            <div id="form-respond" class="">
+                <h4>Update</h4>
+                <form>
+                    <div class="mb-2">
+                        <label for="text-respond-ticket-id" class="form-label">Ticket ID</label>
+                        <input id="text-respond-ticket-id" type="text" class="form-control">
+                    </div>
+                    <div class="mb-2">
+                        <label for="text-respond-ticket-response" class="form-label">Ticket Response</label>
+                        <input id="text-respond-ticket-response" type="text" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <select id="status-dropdown" class="form-select form-select-sm"
+                            aria-label=".form-select-sm example">
+                            <option selected>Select the importance of your Ticket</option>
+                            <option value="1">Low Priority</option>
+                            <option value="2">Medium Priority</option>
+                            <option value="3">High Priority</option>
+                            <option value="4">Urgent Priority</option>
+                        </select>
+                    </div>
+                    <div class="row mb-2 g-2">
+                        <div class="col-auto">
+                            <button id="button-respond" type="button" class="btn btn-primary">Respond</button>
+                        </div>
+                        <div class="col-auto">
+                            <button id="button-respond-cancel" type="button" class="btn btn-primary">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="form-delete" class="">
+                <h4>Delete</h4>
+                <form>
+                    <div class="mb-3">
+                        <label for="text-delete-update-id" class="form-label">Ticket ID</label>
+                        <input id="text-delete-update-id" type="text" class="form-control">
+                    </div>
+                    <div class="row mb-2 g-2">
+                        <div class="col-auto">
+                            <button id="button-respond-delete" type="button" class="btn btn-primary">Delete</button>
+                        </div>
+                        <div class="col-auto">
+                            <button id="button-respond-delete-cancel" type="button"
+                                class="btn btn-primary">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <script src="index.js"></script>
 </body>
 
 </html>
