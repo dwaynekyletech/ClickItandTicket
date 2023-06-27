@@ -37,4 +37,85 @@ public class TicketUpdateController : ControllerBase
 
         return ticketUpdates;
     }
+
+    [HttpGet]
+    [Route("/InsertUpdateTicket")]
+    public Response InsertUpdateTicket(int user_id, string updateContent, DateTime updateTicketTimestamp, TicketStatus ticketStatus, int ticket_id)
+    {
+        Response response = new Response();
+        try
+        {
+            List<TicketUpdate> ticketUpdates = new List<TicketUpdate>();
+            List<Ticket> tickets = new List<Ticket>();
+            TicketUpdate ticketUpdate = new TicketUpdate(user_id, updateContent, updateTicketTimestamp);
+            Ticket ticket = new Ticket(ticket_id, ticketStatus);
+
+            int rowsAffected = 0;
+
+            string connectionString = GetConnectionString();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                rowsAffected = TicketUpdate.InsertUpdateTicket(ticketUpdate, ticket, sqlConnection);
+                // ticket = Ticket.SearchTicket(sqlConnection);
+            }
+
+            response.Result = (rowsAffected == 2) ? "success" : "failure";
+            response.Message = $"{rowsAffected} rows affected.";
+            response.Tickets = tickets;
+        }
+        catch (Exception e)
+        {
+            response.Result = "failure";
+            response.Message = e.Message;
+        }
+
+        return response;
+    }
+
+    [HttpGet]
+    [Route("/getTicketUpdate")]
+
+    public Response GetTicketUpdate(int ticket_id)
+    {
+        Response response = new Response();
+        try
+        {
+            List<TicketUpdate> ticketUpdates;
+            string connectionString = GetConnectionString();
+
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                ticketUpdates = TicketUpdate.GetTicketUpdate(ticket_id, sqlConnection);
+            }
+
+            string message = "";
+
+            if (ticketUpdates.Count() > 0)
+            {
+
+                List<string?> updateContents = ticketUpdates.Select(tu => tu.updateContent).ToList<string?>();
+                int ticketUpdatesCount = updateContents.Count();
+                message = $"Found {ticketUpdatesCount} Updates!";
+
+                return new Response { Updates = updateContents ?? new List<string?>() };
+            }
+            else
+            {
+                message = "No tickets met your search criteria.";
+            }
+
+            response.Result = "success";
+            response.Message = message;
+            response.ticketUpdates = ticketUpdates;
+        }
+        catch (Exception e)
+        {
+            response.Result = "failure";
+            response.Message = e.Message;
+        }
+        return response;
+    }
+
 }

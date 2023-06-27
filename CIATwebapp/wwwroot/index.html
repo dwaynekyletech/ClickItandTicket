@@ -18,7 +18,7 @@
                     <a id="nav-signin" class="nav-link active" aria-current="page" href="#">Home</a>
                     <a id="nav-signup" class="nav-link" href="#">Sign Up</a>
                     <a id="nav-customer" class="nav-link visually-hidden">Manage Your Tickets</a>
-                    <a id="nav-user" class="nav-link visually-hidden">Manage Your Tickets</a>
+                    <a id="nav-user" class="nav-link visually-hidden">Respond to Tickets</a>
                     <a id="nav-signout" class="nav-link ml-auto visually-hidden" href="#">Sign Out</a>
                 </div>
             </div>
@@ -243,7 +243,6 @@
         <!-- <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script> -->
-        <script src="index.js"></script>
     </div>
     <div id="page-respond-tickets" class="row visually-hidden">
 
@@ -309,6 +308,17 @@
                         </div>
                     </div>
                 </form>
+            </div>
+            <div id="dialog" class="dialog">
+                <div class="dialog-content">
+                    <div class="dialog-header">
+                        <h2 class="dialog-title">Ticket Details</h2>
+                        <button class="dialog-close-btn">Close</button>
+                    </div>
+                    <div class="dialog-body">
+                        <div class="dialog-message" id="dialog-message"></div>
+                    </div>
+                </div>
             </div>
             <script src="index.js"></script>
 </body>

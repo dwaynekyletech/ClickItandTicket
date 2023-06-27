@@ -8,14 +8,14 @@ namespace CIATwebapi
 {
     public class Ticket
     {
-        public int ticket_id { get; private set; }
+        public int ticket_id { get; set; }
         public string? ticketSubject { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public TicketPriority ticketPriority { get; private set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public TicketStatus ticketStatus { get; private set; }
+        public TicketStatus ticketStatus { get; set; }
         public string? ticketDescription { get; private set; }
         public int ticketCount { get; set; }
         public string? customer_id { get; set; }
@@ -24,6 +24,11 @@ namespace CIATwebapi
         public Ticket()
         {
 
+        }
+        public Ticket(int ticket_id, TicketStatus ticketStatus)
+        {
+            this.ticket_id = ticket_id;
+            this.ticketStatus = ticketStatus;
         }
         public Ticket(string customer_id)
         {
