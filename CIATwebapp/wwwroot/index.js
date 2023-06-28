@@ -40,12 +40,14 @@ function CIATwebapp() {
     // var showFormUpdate = document.getElementById("form-update");
     // var showFormDelete = document.getElementById("form-delete");
     // var showFormSearch = document.getElementById("form-search");
-    signUpButton.addEventListener("click", insertUser);
+    signUpButton.addEventListener("click", handleSignUpButtonClick);
     buttonSearch.addEventListener("click", searchUsers);
     buttonInsert.addEventListener("click", insertTicket);
     buttonDelete.addEventListener("click", handleButtonDeleteClick);
     buttonUpdate.addEventListener("click", updateTicket);
     buttonUpdateTicket.addEventListener("click", updateTicketUser);
+    customerCheckbox.addEventListener("change", handleCustomerCheckboxChange);
+    csRepCheckbox.addEventListener("change", handleCSRepCheckboxChange);
 
     navSignin.addEventListener("click", handleClickNavSignin);
     navCustomerTicket.addEventListener("click", handleClickNavCustomerTicket);
@@ -134,6 +136,43 @@ function CIATwebapp() {
         });
     }
 
+    function handleSignUpButtonClick(event) {
+        // Perform sign-up actions based on the selected checkboxes
+        if (customerCheckbox.checked && csRepCheckbox.checked) {
+            // Sign up as Customer
+            alert("Please select only one checkbox.");
+            // Call the function or perform actions specific to signing up as a customer
+        } else if (csRepCheckbox.checked) {
+            // Sign up as Customer Service Representative
+            insertUser();
+            // Call the function or perform actions specific to signing up as a customer service representative
+        } else if (customerCheckbox.checked) {
+            // No checkbox selected, handle error or show a message
+            insertCustomer();
+        }
+        else {
+            alert("Please select at least one checkbox.");
+        }
+    }
+
+    function handleCustomerCheckboxChange(event) {
+        if (customerCheckbox.checked) {
+            console.log("Sign up as Customer");
+            if (csRepCheckbox.checked) {
+                csRepCheckbox.checked = false;
+            }
+        }
+    }
+
+    function handleCSRepCheckboxChange(event) {
+        if (csRepCheckbox.checked) {
+            console.log("Sign up as Customer Service Representative");
+            if (customerCheckbox.checked) {
+                customerCheckbox.checked = false;
+            }
+        }
+    }
+
     function insertUser() {
 
         var url = 'http://localhost:5079/InsertUser';
@@ -197,7 +236,7 @@ function CIATwebapp() {
                     var response = JSON.parse(xhr.responseText);
 
                     if (response.result === "success") {
-                        alert("You have successfully signed up as a Customer!");
+                        alert("You have successfully signed up as a Customer Service Representative!");
                         showPage("sign-in");
 
                     } else {
