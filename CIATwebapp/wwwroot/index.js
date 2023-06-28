@@ -197,7 +197,7 @@ function CIATwebapp() {
                     var response = JSON.parse(xhr.responseText);
 
                     if (response.result === "success") {
-                        alert("You have successfully signed up as a Customer!");
+                        alert("You have successfully signed up as a Customer Service Representative!");
                         showPage("sign-in");
 
                     } else {
@@ -236,7 +236,7 @@ function CIATwebapp() {
                     var response = JSON.parse(xhr.responseText);
 
                     if (response.result === "success") {
-                        alert("You have successfully signed up as a Customer Service Representative!");
+                        alert("You have successfully signed up as a Customer!");
                         showPage("sign-in");
 
                     } else {
@@ -497,7 +497,7 @@ function CIATwebapp() {
 
     function getTicketsUser() {
 
-        var url = "http://localhost:5079/GetAllTickets";
+        var url = "http://localhost:5079/GetAllTickets?user_id=" + globalUserId;
 
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = doAfterGetTickets;

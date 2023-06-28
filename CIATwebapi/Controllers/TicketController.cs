@@ -67,7 +67,7 @@ public class TicketController : ControllerBase
     [HttpGet]
     [Route("/GetAllTickets")]
 
-    public Response GetAllTickets()
+    public Response GetAllTickets(int user_id)
     {
         Response response = new Response();
         try
@@ -78,7 +78,7 @@ public class TicketController : ControllerBase
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                tickets = Ticket.GetAllTickets(sqlConnection);
+                tickets = Ticket.GetAllTickets(user_id, sqlConnection);
             }
 
             string message = "";

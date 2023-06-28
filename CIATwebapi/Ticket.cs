@@ -85,13 +85,16 @@ namespace CIATwebapi
             return tickets;
         }
 
-        public static List<Ticket> GetAllTickets(SqlConnection sqlConnection)
+        public static List<Ticket> GetAllTickets(int user_id, SqlConnection sqlConnection)
         {
             List<Ticket> tickets = new List<Ticket>();
-            string sql = "select TicketId, TicketSubject, PriorityId, StatusId, Description, count(*) over () AS [Count] from Ticket";
+            string sql = "select TicketId, TicketSubject, PriorityId, StatusId, Description, count(*) over () AS [Count] from Ticket where UserId is Null or UserId = @user_id";
 
             SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
             sqlCommand.CommandType = System.Data.CommandType.Text;
+            SqlParameter paramUserId = new SqlParameter("@user_id", user_id);
+            paramUserId.DbType = System.Data.DbType.Int32;
+            sqlCommand.Parameters.Add(paramUserId);
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
             while (sqlDataReader.Read())
             {
