@@ -2,8 +2,8 @@ function CIATwebapp() {
 
     //Get elements
 
-    var textSearch = document.getElementById("floatingInput");
-    var textSearch2 = document.getElementById("floatingPassword");
+    var textSearch = document.getElementById("ticket-input");
+    var textSearch2 = document.getElementById("ticket-password");
     var buttonSearch = document.getElementById("button-search2");
 
     var buttonInsert = document.getElementById("button-insert");
@@ -22,6 +22,10 @@ function CIATwebapp() {
 
     var buttonUpdate = document.getElementById("button-update");
     var buttonUpdateTicket = document.getElementById("button-respond");
+
+    var customerCheckbox = document.getElementById("customerCheckbox");
+    var csRepCheckbox = document.getElementById("csRepCheckbox");
+    var signUpButton = document.getElementById("button-signup");
 
     var globalUserId = 0;
 
@@ -157,6 +161,8 @@ function CIATwebapp() {
                         showPage("user-ticket");
                         globalUserId = response.user_id;
                         getTicketsUser();
+                        textSearch.value = "";
+                        textSearch2.value = "";
 
 
                     } else {
@@ -169,7 +175,6 @@ function CIATwebapp() {
                 }
             }
         }
-
     }
 
     function searchCustomers(customerid) {
@@ -209,6 +214,8 @@ function CIATwebapp() {
                 }
             }
         }
+        textSearch.value = "";
+        textSearch2.value = "";
     }
 
 
@@ -285,6 +292,7 @@ function CIATwebapp() {
 
         textSubject.value = "";
         textDescription.value = "";
+        ePriority.value = 0;
     }
 
     function updateTicket() {
@@ -319,13 +327,9 @@ function CIATwebapp() {
             }
         }
 
-        // var updateForm = document.getElementById("form-update");
-        // updateForm.classList.add("visually-hidden");
-
-        // textEmployeeId.value = "";
-        // textFirstName.value = "";
-        // textLastName.value = "";
-        // textSalary.value = "";
+        textTicketId.value = "";
+        textTicketSubject.value = "";
+        textTicketDescription.value = "";
     }
 
     function handleTicketTableDeleteClick(e) {
@@ -334,9 +338,11 @@ function CIATwebapp() {
         deleteTicket(ticket_id);
     }
 
-    function handleButtonDeleteClick() {
+    function handleButtonDeleteClick(event) {
+        event.stopPropagation();
         var textTicketId = document.getElementById("text-delete-ticket-id");
         deleteTicket(textTicketId.value);
+        textTicketId.value = "";
     }
 
     function deleteTicket(ticket_id) {
@@ -432,6 +438,10 @@ function CIATwebapp() {
                 }
             }
         }
+
+        textTicketId = "";
+        textUpdateMessage = "";
+        textUpdateStatus = 0;
     }
 
     function showTickets(tickets) {
@@ -440,15 +450,23 @@ function CIATwebapp() {
         for (var i = 0; i < tickets.length; i++) {
             var ticket = tickets[i];
 
-            // var employeeSalary = (employee.salary === null) ? "" : employee.salary;
-
-            ticketTableText = ticketTableText + "<tr><th scope='row'>" + ticket.ticket_id + "</th><td id='emp-" + ticket.ticket_id + "-subject'>" + ticket.ticketSubject + "</td><td id='emp-" + ticket.ticketId + "-description'>" + ticket.ticketDescription + "</td><td id='emp-" + ticket.ticket_id + "-status'>" + ticket.ticketStatus + "</td><td id='emp-" + ticket.ticket_id + "-subject'>" + ticket.ticketPriority + "</td><td><div class='row g-2'><div class='col-auto'><button type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-update'>Update</button></div><div class='col-auto'><button id='' type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-delete'>Delete</button></div></div></td></tr>";
+            ticketTableText += "<tr data-ticket-id='" + ticket.ticket_id + "'data-ticket-description='" + ticket.ticketDescription + "'><th scope='row'>" + ticket.ticket_id + "</th><td id='emp-" + ticket.ticket_id + "-subject'>" + ticket.ticketSubject + "</td><td id='emp-" + ticket.ticketId + "-description'>" + ticket.ticketDescription + "</td><td id='emp-" + ticket.ticket_id + "-status'>" + ticket.ticketStatus + "</td><td id='emp-" + ticket.ticket_id + "-priority'>" + ticket.ticketPriority + "</td><td><div class='row g-2'><div class='col-auto'><button type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-read'>Read</button></div><div class='col-auto'><button type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-update'>Update</button></div><div class='col-auto'><button type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-delete'>Delete</button></div></div></td></tr>";
         }
 
-        ticketTableText = ticketTableText + "</tbody></table>";
+        ticketTableText += "</tbody></table>";
 
         var ticketTable = document.getElementById("ticket-table");
         ticketTable.innerHTML = ticketTableText;
+
+        var readButtons = document.getElementsByClassName("btn-ticket-table-read");
+
+        for (var i = 0; i < readButtons.length; i++) {
+            var readButton = readButtons[i];
+            readButton.addEventListener("click", handleTicketTableRowClick);
+        }
+
+
+
 
         var updateButtons = document.getElementsByClassName("btn-ticket-table-update");
 
@@ -465,13 +483,15 @@ function CIATwebapp() {
         }
     }
 
+
     function showTicketsUser(tickets) {
-        var ticketTableUserText = "<table class='table table-striped table-sm'><thead><tr><th scope='col'>Ticket ID</th><th scope='col'>Subject</th><th scope='col'>Status</th><th scope='col'>Priority</th><th scope='col'></th><th class='button-column'></th></tr></thead><tbody>";
+        var ticketTableUserText = "<table class='table table-striped table-sm'><thead><tr><th scope='col'>Ticket ID</th><th scope='col'>Subject</th><th scope='col'>Description</th><th scope='col'>Status</th><th scope='col'>Priority</th><th scope='col'></th><th class='button-column'></th></tr></thead><tbody>";
 
         for (var i = 0; i < tickets.length; i++) {
             var ticket = tickets[i];
 
-            ticketTableUserText += "<tr data-ticket-id='" + ticket.ticket_id + "' data-ticket-description='" + ticket.ticketDescription + "'><th scope='row'>" + ticket.ticket_id + "</th><td id='emp-" + ticket.ticket_id + "-subject'>" + ticket.ticketSubject + "</td><td id='emp-" + ticket.ticket_id + "-status'>" + ticket.ticketStatus + "</td><td id='emp-" + ticket.ticket_id + "-subject'>" + ticket.ticketPriority + "</td><td><div class='row g-2'><div class='col-auto'><button type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-update'>Update</button></div><div class='col-auto'><button id='' type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-delete'>Delete</button></div></div></td></tr>";
+            ticketTableUserText += "<tr data-ticket-id='" + ticket.ticket_id + "' data-ticket-description='" + ticket.ticketDescription + "'><th scope='row'>" + ticket.ticket_id + "</th><td id='emp-" + ticket.ticket_id + "-subject'>" + ticket.ticketSubject + "</td><td id='emp-" + ticket.ticketId + "-description'>" + ticket.ticketDescription + "</td><td id='emp-" + ticket.ticket_id + "-status'>" + ticket.ticketStatus + "</td><td id='emp-" + ticket.ticket_id + "-priority'>" + ticket.ticketPriority + "</td><td><div class='row g-2'><div class='col-auto'><button type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-read'>Read</button></div><div class='col-auto'><button type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-update'>Update</button></div><div class='col-auto'><button type='button' data-ticket-id='" + ticket.ticket_id + "' class='btn btn-outline-primary btn-sm btn-ticket-table-delete'>Delete</button></div></div></td></tr>";
+
         }
 
         ticketTableUserText += "</tbody></table>";
@@ -479,42 +499,12 @@ function CIATwebapp() {
         var ticketTableUser = document.getElementById("response-table");
         ticketTableUser.innerHTML = ticketTableUserText;
 
-        var ticketRows = document.getElementsByTagName("tr");
+        var readButtons = document.getElementsByClassName("btn-ticket-table-read");
 
-        for (var i = 0; i < ticketRows.length; i++) {
-            var ticketRow = ticketRows[i];
-
-            ticketRow.addEventListener("click", handleTicketTableRowClick);
+        for (var i = 0; i < readButtons.length; i++) {
+            var readButton = readButtons[i];
+            readButton.addEventListener("click", handleTicketTableRowClick);
         }
-
-        async function handleTicketTableRowClick(event) {
-            var ticketDescription = event.currentTarget.dataset.ticketDescription;
-            var ticketId = event.currentTarget.dataset.ticketId;
-
-            try {
-                var response = await fetch("http://localhost:5079/getTicketUpdate?ticket_Id=" + ticketId);
-                var data = await response.json();
-                var updateContents = data.updates;
-            } catch (error) {
-                console.log("Error fetching ticket updates:", error);
-                var updateContents = [];
-            }
-
-            var alertMessage = "Ticket Description: " + ticketDescription + "\n";
-            alertMessage += "Ticket Updates:\n";
-
-            if (updateContents && updateContents.length > 0) {
-                updateContents.forEach(function (update, index) {
-                    alertMessage += "Update " + (index + 1) + ": " + update + "\n";
-                });
-            } else {
-                alertMessage += "No updates available.";
-            }
-
-            showDialogBox(alertMessage);
-        }
-
-
 
         var updateButtons = document.getElementsByClassName("btn-ticket-table-update");
 
@@ -532,6 +522,35 @@ function CIATwebapp() {
 
     }
 
+    async function handleTicketTableRowClick(event) {
+        var ticketDescription = event.target.closest("tr").querySelector("#emp-" + ticketId + "-description").textContent;
+
+        var ticketId = event.currentTarget.dataset.ticketId;
+
+        try {
+            var response = await fetch("http://localhost:5079/getTicketUpdate?ticket_Id=" + ticketId);
+            var data = await response.json();
+            var updateContents = data.updates;
+        } catch (error) {
+            console.log("Error fetching ticket updates:", error);
+            var updateContents = [];
+        }
+
+        var alertMessage = "Ticket Description: " + ticketDescription + "\n";
+        alertMessage += "Ticket Updates:\n";
+
+        if (updateContents && updateContents.length > 0) {
+            updateContents.forEach(function (update, index) {
+                alertMessage += "Update " + (index + 1) + ": " + update + "\n";
+            });
+        } else {
+            alertMessage += "No updates available.";
+        }
+
+        showDialogBox(alertMessage);
+        console.log(ticketDescription);
+        console.log(ticketId);
+    }
 
 
 
