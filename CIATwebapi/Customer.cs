@@ -48,27 +48,27 @@ namespace CIATwebapi
             return customers;
         }
 
-        public static int InsertCustomer(Customer customer, SqlConnection sqlConnection)
-        {
-            string sql = "insert into Customer (Username, Password) values (@Username, @Password);";
+        // public static int InsertCustomer(Customer customer, SqlConnection sqlConnection)
+        // {
+        //     string sql = "insert into Customer (Username, Password) values (@Username, @Password);";
 
-            SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
-            sqlCommand.CommandType = System.Data.CommandType.Text;
+        //     SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
+        //     sqlCommand.CommandType = System.Data.CommandType.Text;
 
-            SqlParameter paramUsername = new SqlParameter("@Username", customer.userName);
-            SqlParameter paramPassword = new SqlParameter("@Password", customer.password);
+        //     SqlParameter paramUsername = new SqlParameter("@Username", customer.userName);
+        //     SqlParameter paramPassword = new SqlParameter("@Password", customer.password);
 
-            paramUsername.DbType = System.Data.DbType.String;
-            paramPassword.DbType = System.Data.DbType.String;
+        //     paramUsername.DbType = System.Data.DbType.String;
+        //     paramPassword.DbType = System.Data.DbType.String;
 
-            sqlCommand.Parameters.Add(paramUsername);
-            sqlCommand.Parameters.Add(paramPassword);
+        //     sqlCommand.Parameters.Add(paramUsername);
+        //     sqlCommand.Parameters.Add(paramPassword);
 
-            int rowsAffected = sqlCommand.ExecuteNonQuery();
-            return rowsAffected;
+        //     int rowsAffected = sqlCommand.ExecuteNonQuery();
+        //     return rowsAffected;
 
 
-        }
+        // }
 
         public static List<Customer> SearchCustomers(SqlConnection sqlConnection, string? searchCustomerUsername, string? searchCustomerPassword, int customerid)
         {
@@ -99,6 +99,24 @@ namespace CIATwebapi
             }
 
             return customers;
+        }
+
+        public static int InsertCustomer(SqlConnection sqlConnection, string? insertCustomerUsername, string? insertCustomerPassword)
+        {
+            List<Customer> customers = new List<Customer>();
+
+            string sql = "insert into Customer (Username, Password) values (@Username, @Password);";
+            SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
+            sqlCommand.CommandType = System.Data.CommandType.Text;
+            SqlParameter paramSearch = new SqlParameter("@Username", insertCustomerUsername);
+            SqlParameter paramSearch2 = new SqlParameter("@Password", insertCustomerPassword);
+            paramSearch.DbType = System.Data.DbType.String;
+            paramSearch2.DbType = System.Data.DbType.String;
+            sqlCommand.Parameters.Add(paramSearch);
+            sqlCommand.Parameters.Add(paramSearch2);
+
+            int rowsAffected = sqlCommand.ExecuteNonQuery();
+            return rowsAffected;
         }
     }
 }

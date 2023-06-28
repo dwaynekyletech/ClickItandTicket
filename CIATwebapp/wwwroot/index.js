@@ -27,6 +27,9 @@ function CIATwebapp() {
     var csRepCheckbox = document.getElementById("csRepCheckbox");
     var signUpButton = document.getElementById("button-signup");
 
+    var signUpUsername = document.getElementById("signup-Username");
+    var signUpPassword = document.getElementById("signup-Password");
+
     var globalUserId = 0;
 
     var globalCustomerId = 0;
@@ -37,12 +40,12 @@ function CIATwebapp() {
     // var showFormUpdate = document.getElementById("form-update");
     // var showFormDelete = document.getElementById("form-delete");
     // var showFormSearch = document.getElementById("form-search");
-
-    buttonSearch.addEventListener("click", searchUsers)
+    signUpButton.addEventListener("click", insertCustomer);
+    buttonSearch.addEventListener("click", searchUsers);
     buttonInsert.addEventListener("click", insertTicket);
     buttonDelete.addEventListener("click", handleButtonDeleteClick);
     buttonUpdate.addEventListener("click", updateTicket);
-    buttonUpdateTicket.addEventListener("click", updateTicketUser)
+    buttonUpdateTicket.addEventListener("click", updateTicketUser);
 
     navSignin.addEventListener("click", handleClickNavSignin);
     navCustomerTicket.addEventListener("click", handleClickNavCustomerTicket);
@@ -129,6 +132,45 @@ function CIATwebapp() {
         dialogCloseButton.addEventListener("click", function () {
             dialog.style.display = "none";
         });
+    }
+
+    function insertCustomer() {
+
+        var url = 'http://localhost:5079/InsertCustomer';
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = doAfterSearchCustomers;
+        xhr.open('POST', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        var body = {
+            "userName": signUpUsername.value,
+            "password": signUpPassword.value
+        };
+        xhr.send(JSON.stringify(body));
+        // xhr.send(null);
+
+        function doAfterSearchCustomers() {
+            var DONE = 4; // readyState 4 means the request is done.
+            var OK = 200; // status 200 is a successful return.
+            if (xhr.readyState === DONE) {
+                if (xhr.status === OK) {
+
+                    var response = JSON.parse(xhr.responseText);
+
+                    if (response.result === "success") {
+                        alert("You have successfully signed up as a Customer!");
+                        showPage("sign-in");
+
+                    } else {
+                        alert("API Error: " + response.message);
+                    }
+                } else {
+                    alert("Server Error: " + xhr.status + " " + xhr.statusText);
+                }
+            }
+        }
+        signUpUsername.value = "";
+        signUpPassword.value = "";
     }
 
 
