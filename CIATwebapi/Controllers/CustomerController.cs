@@ -38,40 +38,6 @@ public class CustomerController : ControllerBase
         return customers;
     }
 
-    // [HttpGet]
-    // [Route("/InsertCustomer")]
-    // public Response InsertCustomer(string userName, string password)
-    // {
-    //     Response response = new Response();
-    //     try
-    //     {
-    //         List<Customer> customers = new List<Customer>();
-
-    //         Customer customer = new Customer(userName, password);
-
-    //         int rowsAffected = 0;
-
-    //         string connectionString = GetConnectionString();
-    //         using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-    //         {
-    //             sqlConnection.Open();
-    //             rowsAffected = Customer.InsertCustomer(customer, sqlConnection);
-    //             // ticket = Ticket.SearchTicket(sqlConnection);
-    //         }
-
-    //         response.Result = (rowsAffected == 1) ? "success" : "failure";
-    //         response.Message = $"{rowsAffected} rows affected.";
-    //         response.Customers = customers;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         response.Result = "failure";
-    //         response.Message = e.Message;
-    //     }
-
-    //     return response;
-    // }
-
     [HttpPost]
     [Route("/SearchCustomers")]
     public Response SearchCustomers([FromBody] Customer customer)

@@ -48,21 +48,19 @@ namespace CIATwebapi
             return users;
         }
 
-        public static int InsertUser(User user, SqlConnection sqlConnection)
+        public static int InsertUser(SqlConnection sqlConnection, string? insertUserUsername, string? insertUserPassword)
         {
-            string sql = "insert into [User] (Username, Password) values (@Username, @Password);";
+            List<User> users = new List<User>();
 
+            string sql = "insert into [User] (Username, Password) values (@Username, @Password);";
             SqlCommand sqlCommand = new SqlCommand(sql, sqlConnection);
             sqlCommand.CommandType = System.Data.CommandType.Text;
-
-            SqlParameter paramUserName = new SqlParameter("@Username", user.userName);
-            SqlParameter paramPassword = new SqlParameter("@Password", user.password);
-
-            paramUserName.DbType = System.Data.DbType.String;
-            paramPassword.DbType = System.Data.DbType.String;
-
-            sqlCommand.Parameters.Add(paramUserName);
-            sqlCommand.Parameters.Add(paramPassword);
+            SqlParameter paramSearch = new SqlParameter("@Username", insertUserUsername);
+            SqlParameter paramSearch2 = new SqlParameter("@Password", insertUserPassword);
+            paramSearch.DbType = System.Data.DbType.String;
+            paramSearch2.DbType = System.Data.DbType.String;
+            sqlCommand.Parameters.Add(paramSearch);
+            sqlCommand.Parameters.Add(paramSearch2);
 
             int rowsAffected = sqlCommand.ExecuteNonQuery();
             return rowsAffected;

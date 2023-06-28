@@ -38,18 +38,17 @@ public class UserController : ControllerBase
         return users;
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("/InsertUser")]
-    public Response InsertUser(string userName, string password)
+    public Response InsertUser([FromBody] User user)
     {
         Response response = new Response();
         try
         {
             List<User> users = new List<User>();
 
-            User user = new User(userName, password);
-
-
+            string? insertUserUsername = user.userName;
+            string? insertUserPassword = user.password;
 
             int rowsAffected = 0;
 
@@ -57,7 +56,7 @@ public class UserController : ControllerBase
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-                rowsAffected = CIATwebapi.User.InsertUser(user, sqlConnection);
+                rowsAffected = CIATwebapi.User.InsertUser(sqlConnection, insertUserUsername, insertUserPassword);
                 // ticket = Ticket.SearchTicket(sqlConnection);
             }
 

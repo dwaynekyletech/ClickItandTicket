@@ -40,7 +40,7 @@ function CIATwebapp() {
     // var showFormUpdate = document.getElementById("form-update");
     // var showFormDelete = document.getElementById("form-delete");
     // var showFormSearch = document.getElementById("form-search");
-    signUpButton.addEventListener("click", insertCustomer);
+    signUpButton.addEventListener("click", insertUser);
     buttonSearch.addEventListener("click", searchUsers);
     buttonInsert.addEventListener("click", insertTicket);
     buttonDelete.addEventListener("click", handleButtonDeleteClick);
@@ -134,12 +134,12 @@ function CIATwebapp() {
         });
     }
 
-    function insertCustomer() {
+    function insertUser() {
 
-        var url = 'http://localhost:5079/InsertCustomer';
+        var url = 'http://localhost:5079/InsertUser';
 
         var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = doAfterSearchCustomers;
+        xhr.onreadystatechange = doAfterSearchUser;
         xhr.open('POST', url);
         xhr.setRequestHeader('Content-Type', 'application/json');
         var body = {
@@ -149,7 +149,46 @@ function CIATwebapp() {
         xhr.send(JSON.stringify(body));
         // xhr.send(null);
 
-        function doAfterSearchCustomers() {
+        function doAfterSearchUser() {
+            var DONE = 4; // readyState 4 means the request is done.
+            var OK = 200; // status 200 is a successful return.
+            if (xhr.readyState === DONE) {
+                if (xhr.status === OK) {
+
+                    var response = JSON.parse(xhr.responseText);
+
+                    if (response.result === "success") {
+                        alert("You have successfully signed up as a Customer!");
+                        showPage("sign-in");
+
+                    } else {
+                        alert("API Error: " + response.message);
+                    }
+                } else {
+                    alert("Server Error: " + xhr.status + " " + xhr.statusText);
+                }
+            }
+        }
+        signUpUsername.value = "";
+        signUpPassword.value = "";
+    }
+
+    function insertCustomer() {
+
+        var url = 'http://localhost:5079/InsertCustomer';
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = doAfterInsertCustomer;
+        xhr.open('POST', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        var body = {
+            "userName": signUpUsername.value,
+            "password": signUpPassword.value
+        };
+        xhr.send(JSON.stringify(body));
+        // xhr.send(null);
+
+        function doAfterInsertCustomer() {
             var DONE = 4; // readyState 4 means the request is done.
             var OK = 200; // status 200 is a successful return.
             if (xhr.readyState === DONE) {
