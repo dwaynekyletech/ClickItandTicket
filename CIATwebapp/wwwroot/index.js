@@ -559,9 +559,9 @@ function CIATwebapp() {
             }
         }
 
-        textTicketId = "";
-        textUpdateMessage = "";
-        textUpdateStatus = 0;
+        textTicketId.value = "";
+        textUpdateMessage.value = "";
+        textUpdateStatus.value = 0;
     }
 
     function showTickets(tickets) {
